@@ -11,10 +11,16 @@ public class BowController : MonoBehaviour
 
 
 
+
     private GameObject newArrow;
     private LineRenderer lineRendererComponent;
+    private Collider2D boxColliderComponent;
     private Vector3 initialPositionArrow;
     private Vector3 initialPositionStringPoint1;
+    private Vector3 initialPositionClosedArea0;
+    private Vector3 initialPositionClosedArea1;
+    private Vector3 initialPositionClosedArea2;
+    private Vector3 initialPositionClosedArea3;
 
 
 
@@ -23,9 +29,17 @@ public class BowController : MonoBehaviour
     {
         GameObject newBowString = Instantiate(bowStringPrefab);
         newArrow = Instantiate(ArrowPrefab, stringPoints[1].transform.position, Quaternion.identity);
+
         lineRendererComponent = newBowString.GetComponent<LineRenderer>();
+        boxColliderComponent = gameObject.GetComponent<Collider2D>();
+
         initialPositionStringPoint1 = stringPoints[1].transform.position;
         initialPositionArrow = newArrow.transform.position;
+        initialPositionClosedArea0 = closedArea[0].transform.position;
+        initialPositionClosedArea1 = closedArea[1].transform.position;
+        initialPositionClosedArea2 = closedArea[2].transform.position;
+        initialPositionClosedArea3 = closedArea[3].transform.position;
+
         SpawnBowString();
     }
 
@@ -34,28 +48,49 @@ public class BowController : MonoBehaviour
     {
         if(Input.GetMouseButton(0))
         {
+            
             Vector3 mousePos;
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.y = 0.0f;
-            mousePos.z = 0.0f;
+
             if(isValid(mousePos.x, mousePos.y)){
-                stringPoints[1].transform.position = mousePos;
-                newArrow.transform.position = mousePos;
+                float A = Mathf.Abs(mousePos.x-initialPositionStringPoint1.x);
+                float B = Mathf.Abs(mousePos.y-initialPositionStringPoint1.y);
+                float angle = Mathf.Atan(B/A) * Mathf.Rad2Deg;
+
+                if(mousePos.y >= 0)
+                {
+                    gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
+                    newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
+                }
+                else
+                {
+                    gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
+                    newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
+                }
+
+                Vector3 temp = mousePos;
+                temp.z = 0.0f;
+
+                stringPoints[1].transform.position = temp;
+                newArrow.transform.position = temp;
             }
             else
             {
                 stringPoints[1].transform.position = initialPositionStringPoint1;
                 newArrow.transform.position = initialPositionArrow;
+                gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+                newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
             }
         }
         else
         {
+            gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+            newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
             stringPoints[1].transform.position = initialPositionStringPoint1;
             newArrow.transform.position = initialPositionArrow;
         }
+        
         SpawnBowString();
-        //gameObject.transform.Rotate( new Vector3(0, 0, 0.3f) );
-        //gameObject.transform.Rotate (0, 0, Time.deltaTime * 20);
         //initialPositionStringPoint1 = stringPoints[1].transform.position;
     }
 
@@ -70,6 +105,6 @@ public class BowController : MonoBehaviour
 
     private bool isValid(float x, float y)
     {
-        return x>=closedArea[0].transform.position.x && x<=closedArea[1].transform.position.x && y<= closedArea[0].transform.position.y && y>= closedArea[2].transform.position.y;
+        return x>=initialPositionClosedArea0.x && x<=initialPositionClosedArea1.x && y<= initialPositionClosedArea0.y && y>= initialPositionClosedArea2.y;
     }
 }
