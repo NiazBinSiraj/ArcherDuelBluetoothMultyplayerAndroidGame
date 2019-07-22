@@ -5,7 +5,8 @@ using UnityEngine;
 public class BowController : MonoBehaviour
 {
     public GameObject bowStringPrefab;
-    public GameObject ArrowPrefab;
+    public GameObject arrowPrefab;
+    public GameObject arrowObject;
     public GameObject [] stringPoints = new GameObject[3];
     public GameObject [] closedArea = new GameObject[4];
 
@@ -28,13 +29,13 @@ public class BowController : MonoBehaviour
     void Start()
     {
         GameObject newBowString = Instantiate(bowStringPrefab);
-        newArrow = Instantiate(ArrowPrefab, stringPoints[1].transform.position, Quaternion.identity);
+        //newArrow = Instantiate(arrowPrefab, stringPoints[1].transform.position, Quaternion.identity);
 
         lineRendererComponent = newBowString.GetComponent<LineRenderer>();
         boxColliderComponent = gameObject.GetComponent<Collider2D>();
 
         initialPositionStringPoint1 = stringPoints[1].transform.position;
-        initialPositionArrow = newArrow.transform.position;
+        initialPositionArrow = arrowObject.transform.position;
         initialPositionClosedArea0 = closedArea[0].transform.position;
         initialPositionClosedArea1 = closedArea[1].transform.position;
         initialPositionClosedArea2 = closedArea[2].transform.position;
@@ -60,38 +61,37 @@ public class BowController : MonoBehaviour
                 if(mousePos.y >= 0)
                 {
                     gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
-                    newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
+                    //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
                 }
                 else
                 {
                     gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
-                    newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
+                    //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
                 }
 
                 Vector3 temp = mousePos;
                 temp.z = 0.0f;
 
                 stringPoints[1].transform.position = temp;
-                newArrow.transform.position = temp;
+                arrowObject.transform.position = temp;
             }
             else
             {
                 stringPoints[1].transform.position = initialPositionStringPoint1;
-                newArrow.transform.position = initialPositionArrow;
+                arrowObject.transform.position = initialPositionArrow;
                 gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
-                newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+                //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
             }
         }
         else
         {
             gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
-            newArrow.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+            arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
             stringPoints[1].transform.position = initialPositionStringPoint1;
-            newArrow.transform.position = initialPositionArrow;
+            //arrowObject.transform.position = initialPositionArrow;
         }
         
         SpawnBowString();
-        //initialPositionStringPoint1 = stringPoints[1].transform.position;
     }
 
     private void SpawnBowString()
