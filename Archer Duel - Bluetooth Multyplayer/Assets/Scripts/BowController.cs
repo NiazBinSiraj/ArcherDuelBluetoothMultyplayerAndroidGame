@@ -23,6 +23,8 @@ public class BowController : MonoBehaviour
     private Vector3 initialPositionClosedArea2;
     private Vector3 initialPositionClosedArea3;
 
+    private float cnt;
+
 
 
     // Start is called before the first frame update
@@ -34,14 +36,17 @@ public class BowController : MonoBehaviour
         lineRendererComponent = newBowString.GetComponent<LineRenderer>();
         boxColliderComponent = gameObject.GetComponent<Collider2D>();
 
-        initialPositionStringPoint1 = stringPoints[1].transform.position;
+        //initialPositionStringPoint1 = stringPoints[1].transform.position;
         initialPositionArrow = arrowObject.transform.position;
         initialPositionClosedArea0 = closedArea[0].transform.position;
         initialPositionClosedArea1 = closedArea[1].transform.position;
         initialPositionClosedArea2 = closedArea[2].transform.position;
         initialPositionClosedArea3 = closedArea[3].transform.position;
 
+        setStringPoint1();
+
         SpawnBowString();
+        cnt = 1;
     }
 
     // Update is called once per frame
@@ -62,11 +67,12 @@ public class BowController : MonoBehaviour
                 {
                     gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
                     //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, -angle);
+                    setStringPoint1();
                 }
                 else
                 {
                     gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
-                    //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);
+                    //arrowObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, angle);z
                 }
 
                 Vector3 temp = mousePos;
@@ -92,6 +98,8 @@ public class BowController : MonoBehaviour
         }
         
         SpawnBowString();
+        cnt++;
+        gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, cnt);
     }
 
     private void SpawnBowString()
@@ -106,5 +114,10 @@ public class BowController : MonoBehaviour
     private bool isValid(float x, float y)
     {
         return x>=initialPositionClosedArea0.x && x<=initialPositionClosedArea1.x && y<= initialPositionClosedArea0.y && y>= initialPositionClosedArea2.y;
+    }
+
+    private void setStringPoint1()
+    {
+        stringPoints[1].transform.position = new Vector3((stringPoints[0].transform.position.x + stringPoints[2].transform.position.x)/2, (stringPoints[0].transform.position.y + stringPoints[2].transform.position.y)/2, 0.0f);
     }
 }
